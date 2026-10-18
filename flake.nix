@@ -11,14 +11,23 @@
     {
       devShells = forAllSystems (system:
         let
-          pkgs = import nixpkgs { inherit system; };
-          clang = pkgs.llvmPackages_latest.clang;
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          llvmPkgs = pkgs.llvmPackages_latest;
         in
         {
           default = pkgs.mkShell {
-            packages = [ clang pkgs.cmake pkgs.ninja ];
-            CC = "${clang}/bin/clang";
-            CXX = "${clang}/bin/clang++";
+            packages = [
+              llvmPkgs.clang
+              llvmPkgs.clang-tools
+              pkgs.cmake
+              pkgs.ninja
+              pkgs.github-copilot-cli
+            ];
+            CC = "${llvmPkgs.clang}/bin/clang";
+            CXX = "${llvmPkgs.clang}/bin/clang++";
           };
         });
     };
