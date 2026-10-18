@@ -1,6 +1,7 @@
-#include <tuple>
-#include <type_traits>
-#include <utility>
+#include <functional>   // IWYU pragma: keep
+#include <tuple>        // for tuple_size_v
+#include <type_traits>  // for remove_reference_t, is_invocable_r_v, true_type
+#include <utility>      // for make_index_sequence
 
 #define FWD(x) static_cast<decltype(x) &&>(x)
 

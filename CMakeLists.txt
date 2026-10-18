@@ -21,8 +21,14 @@ if(INCLUDE_WHAT_YOU_USE_EXECUTABLE)
   foreach(include_dir IN LISTS CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES)
     list(APPEND IWYU_HEADER_ARGS "-isystem${include_dir}")
   endforeach()
+  set(IWYU_SELF_ARGS_RAW --error --experimental=clang_mappings)
+  set(IWYU_SELF_ARGS "")
+  foreach(arg IN LISTS IWYU_SELF_ARGS_RAW)
+    list(APPEND IWYU_SELF_ARGS "-Xiwyu" "${arg}")
+  endforeach()
+  MESSAGE(STATUS "IWYU_SELF_ARGS: ${IWYU_SELF_ARGS}")
   add_custom_target(include-what-you-use
-    COMMAND "${INCLUDE_WHAT_YOU_USE_EXECUTABLE}" -Xiwyu --error=1 ${IWYU_HEADER_ARGS}
+    COMMAND "${INCLUDE_WHAT_YOU_USE_EXECUTABLE}" ${IWYU_SELF_ARGS} ${IWYU_HEADER_ARGS}
       "${CMAKE_CURRENT_SOURCE_DIR}/ufcs.hpp"
     VERBATIM
   )
