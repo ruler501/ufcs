@@ -27,5 +27,13 @@ jobs:
       matrix: ${{fromJSON(needs.nix-matrix.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v4
+
       - uses: cachix/install-nix-action@v30
+
+      - uses: actions/cache@v6
+        with:
+          path: |
+            /nix/store
+          key: ${{ runner.os }}-${{ matrix.system }}-${{ hashFiles('flake.*') }}
+
       - run: nix build -L '.#${{ matrix.attr }}'
