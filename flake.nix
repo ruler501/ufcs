@@ -2,7 +2,11 @@
   description = "Development environment for ufcs";
 
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils/main";
+    systems.url = "github:nix-systems/triplet";
+    flake-utils = {
+      url = "github:numtide/flake-utils/main";
+      inputs.systems.follows = "systems";
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nix-github-actions = {
       url = "github:nix-community/nix-github-actions";
@@ -10,7 +14,7 @@
     };
   };
 
-  outputs = { self, flake-utils, nixpkgs, nix-github-actions }:
+  outputs = { self, flake-utils, nixpkgs, nix-github-actions, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -35,8 +39,8 @@
             nativeBuildInputs = buildPackages;
           }
           ''
-            cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++
-            cmake --build build --target clang-tidy
+            cmake -S . -B build-nix -G Ninja -DCMAKE_CXX_COMPILER=clang++
+            cmake --build build-nix --target clang-tidy
           '');
         };
         
@@ -50,9 +54,9 @@
             CXX = "${llvmPkgs.clang}/bin/clang++";
           };
         };
-
-        githubActions = nix-github-actions.lib.mkGithubMatrix {
-          checks = nixpkgs.lib.getAttrs [ "x86_64-linux" "x86_64-darwin" ] self.checks;
-        };
-    });
+    }) // {
+      githubActions = nix-github-actions.lib.mkGithubMatrix {
+        checks = nixpkgs.lib.getAttrs [ "x86_64-linux" "x86_64-darwin" ] self.checks;
+      };
+    };
 }
