@@ -15,6 +15,19 @@ if(CLANG_TIDY_EXECUTABLE)
   )
 endif()
 
+find_program(INCLUDE_WHAT_YOU_USE_EXECUTABLE NAMES include-what-you-use)
+if(INCLUDE_WHAT_YOU_USE_EXECUTABLE)
+  set(IWYU_HEADER_ARGS -std=c++23 -x c++)
+  foreach(include_dir IN LISTS CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES)
+    list(APPEND IWYU_HEADER_ARGS "-isystem${include_dir}")
+  endforeach()
+  add_custom_target(include-what-you-use
+    COMMAND "${INCLUDE_WHAT_YOU_USE_EXECUTABLE}" ${IWYU_HEADER_ARGS}
+      "${CMAKE_CURRENT_SOURCE_DIR}/ufcs.hpp"
+    VERBATIM
+  )
+endif()
+
 find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
 if(CLANG_FORMAT_EXECUTABLE)
   add_custom_target(clang-format

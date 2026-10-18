@@ -22,6 +22,7 @@
             packages = [
               llvmPkgs.clang
               llvmPkgs.clang-tools
+              pkgs.include-what-you-use
               pkgs.cmake
               pkgs.ninja
               pkgs.github-copilot-cli
