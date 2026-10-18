@@ -25,6 +25,7 @@
               pkgs.include-what-you-use
               pkgs.cmake
               pkgs.ninja
+              pkgs.github-cli
               pkgs.github-copilot-cli
             ];
             CC = "${llvmPkgs.clang}/bin/clang";
