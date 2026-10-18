@@ -22,7 +22,7 @@ if(INCLUDE_WHAT_YOU_USE_EXECUTABLE)
     list(APPEND IWYU_HEADER_ARGS "-isystem${include_dir}")
   endforeach()
   add_custom_target(include-what-you-use
-    COMMAND "${INCLUDE_WHAT_YOU_USE_EXECUTABLE}" ${IWYU_HEADER_ARGS}
+    COMMAND "${INCLUDE_WHAT_YOU_USE_EXECUTABLE}" -Xiwyu --error=1 ${IWYU_HEADER_ARGS}
       "${CMAKE_CURRENT_SOURCE_DIR}/ufcs.hpp"
     VERBATIM
   )

@@ -31,44 +31,20 @@
         ];
       in
       {
-        checks = {
-          clang-format = (pkgs.runCommandLocal
-            "clang-format"
+        checks = nixpkgs.lib.genAttrs [ "clang-format" "clang-tidy" "include-what-you-use" ] (target: 
+          (pkgs.runCommandLocal
+            target
             {
               src = ./.;
               nativeBuildInputs = buildPackages;
             }
             ''
-              cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++
-              cmake --build build --target clang-format
-              [ -z "$(git status --porcelain)" ]
+              cmake -S ${./.} -B . -G Ninja -DCMAKE_CXX_COMPILER=clang++
+              cmake --build . --target ${target}
+              mkdir "$out"
             ''
-          );
-          clang-tidy = (pkgs.runCommandLocal
-            "clang-tidy"
-            {
-              src = ./.;
-              nativeBuildInputs = buildPackages;
-            }
-            ''
-              cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++
-              cmake --build build --target clang-tidy
-              [ -z "$(git status --porcelain)" ]
-            ''
-          );
-          include-what-you-use = (pkgs.runCommandLocal
-            "include-what-you-use"
-            {
-              src = ./.;
-              nativeBuildInputs = buildPackages;
-            }
-            ''
-              cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++
-              cmake --build build --target include-what-you-use
-              [ -z "$(git status --porcelain)" ]
-            ''
-          );
-        };
+          )
+        );
         
         devShells = {
           default = pkgs.mkShell {
