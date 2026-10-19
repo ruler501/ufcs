@@ -11,7 +11,11 @@ Checks: >
   -cppcoreguidelines-macro-usage,
   -cppcoreguidelines-missing-std-forward,
   -modernize-use-trailing-return-type,
-  -readability-identifier-length
+  -readability-identifier-length,
+  -readability-function-cognitive-complexity,
+  -modernize-use-nodiscard,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 FormatStyle: file

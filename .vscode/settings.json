@@ -1,0 +1,6 @@
+{
+    "cmake.configureArgs": [
+        "-DUFCS_BUILD_TESTS=ON",
+        "-DCatch2_DIR=external/Catch2/lib/cmake/Catch2"
+    ]
+}
