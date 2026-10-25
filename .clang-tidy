@@ -15,7 +15,11 @@ Checks: >
   -readability-function-cognitive-complexity,
   -modernize-use-nodiscard,
   -cppcoreguidelines-avoid-magic-numbers,
-  -readability-magic-numbers
+  -readability-magic-numbers,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-pro-type-member-init,
+  -bugprone-branch-clone,
+  -bugprone-easily-swappable-parameters
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 FormatStyle: file

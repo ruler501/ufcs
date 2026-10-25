@@ -9,18 +9,17 @@ if(UFCS_BUILD_TESTS)
 
   include(CTest)
   include(Catch)
+
+  set(CATCH2_INCLUDE_DIRS ${Catch2_ROOT}/include)
   add_executable(ufcs-tests tests/ufcs_tests.cpp)
-  set_target_properties(ufcs-tests PROPERTIES CXX_SCAN_FOR_MODULES OFF)
   target_link_libraries(ufcs-tests PRIVATE Catch2::Catch2WithMain ufcs::ufcs)
   catch_discover_tests(ufcs-tests)
-  set(CATCH2_INCLUDE_DIRS ${Catch2_ROOT}/include)
-  get_target_property(CATCH2_INCLUDE_DIRS Catch2::Catch2 INTERFACE_INCLUDE_DIRECTORIES)
-  MESSAGE(STATUS "CATCH2_INCLUDE_DIRS: ${CATCH2_INCLUDE_DIRS}")
+  set_target_properties(ufcs-tests PROPERTIES CXX_SCAN_FOR_MODULES OFF)
 endif()
 
 find_program(CLANG_TIDY_EXECUTABLE NAMES clang-tidy)
 if(CLANG_TIDY_EXECUTABLE)
-  set(CLANG_TIDY_HEADER_ARGS -std=c++20 -x c++)
+  set(CLANG_TIDY_HEADER_ARGS -std=c++23 -x c++)
   set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
   foreach(include_dir IN LISTS CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES CATCH2_INCLUDE_DIRS)
     list(APPEND CLANG_TIDY_HEADER_ARGS "-isystem${include_dir}")
@@ -37,7 +36,7 @@ endif()
 
 find_program(INCLUDE_WHAT_YOU_USE_EXECUTABLE NAMES include-what-you-use)
 if(INCLUDE_WHAT_YOU_USE_EXECUTABLE)
-  set(IWYU_HEADER_ARGS -std=c++20 -x c++)
+  set(IWYU_HEADER_ARGS -std=c++23 -x c++)
   foreach(include_dir IN LISTS CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES CATCH2_INCLUDE_DIRS)
     list(APPEND IWYU_HEADER_ARGS "-isystem${include_dir}")
   endforeach()
@@ -68,18 +67,9 @@ endif()
 add_library(ufcs INTERFACE)
 add_library(ufcs::ufcs ALIAS ufcs)
 
-target_compile_features(ufcs INTERFACE cxx_std_20)
+target_compile_features(ufcs INTERFACE cxx_std_23)
 target_include_directories(ufcs INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include>
 )
 set_target_properties(ufcs PROPERTIES CXX_SCAN_FOR_MODULES OFF)
-
-include(GNUInstallDirs)
-install(TARGETS ufcs EXPORT ufcsTargets)
-install(FILES ufcs.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(EXPORT ufcsTargets
-  FILE ufcsTargets.cmake
-  NAMESPACE ufcs::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ufcs
-)
